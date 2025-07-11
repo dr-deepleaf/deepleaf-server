@@ -2,6 +2,8 @@ package com.example.deepleaf.member.controller;
 
 import com.example.deepleaf.member.domain.Member;
 import com.example.deepleaf.member.dto.request.MemberCreateDto;
+import com.example.deepleaf.member.dto.request.MemberLoginDto;
+import com.example.deepleaf.member.dto.response.MemberLoginResponseDto;
 import com.example.deepleaf.member.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -20,5 +22,11 @@ public class MemberController {
     public ResponseEntity<?> createMember(@RequestBody MemberCreateDto memberCreateDto){
         Member member = memberService.create(memberCreateDto);
         return new ResponseEntity<>(member.getId(), HttpStatus.CREATED);
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<MemberLoginResponseDto> login(@RequestBody MemberLoginDto memberLoginDto){
+        MemberLoginResponseDto response = memberService.login(memberLoginDto);
+        return ResponseEntity.ok().body(response);
     }
 }
