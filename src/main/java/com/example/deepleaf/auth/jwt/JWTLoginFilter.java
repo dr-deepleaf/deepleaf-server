@@ -33,9 +33,9 @@ public class JWTLoginFilter extends OncePerRequestFilter {
 
         String authorization = request.getHeader("Authorization");
 
-
+        log.debug("authorization: {}", authorization);
         // 요청 헤더 인증 정보 검사
-        if(authorization == null || authorization.startsWith("Bearer ")) {
+        if(authorization == null || !authorization.startsWith("Bearer ")) {
             throw new InvalidToken();
         }
 

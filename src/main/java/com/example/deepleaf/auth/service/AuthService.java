@@ -1,13 +1,14 @@
-package com.example.deepleaf.member.service;
+package com.example.deepleaf.auth.service;
 
-import com.example.deepleaf.member.common.auth.JwtTokenProvider;
+import com.example.deepleaf.auth.jwt.JWTUtil;
+import com.example.deepleaf.auth.repository.AuthRepository;
 import com.example.deepleaf.member.domain.Member;
 import com.example.deepleaf.member.dto.request.MemberCreateDto;
 import com.example.deepleaf.member.dto.request.MemberLoginDto;
 import com.example.deepleaf.member.dto.response.MemberLoginResponseDto;
-import com.example.deepleaf.member.repository.MemberRepository;
+
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,16 +17,16 @@ import java.util.Optional;
 @Service
 @Transactional
 @RequiredArgsConstructor
-public class MemberService {
-    private final PasswordEncoder passwordEncoder;
-    private final MemberRepository memberRepository;
-    private final JwtTokenProvider jwtTokenProvider;
+@Slf4j
+public class AuthService {
+    private final AuthRepository memberRepository;
+    private final JWTUtil jwtUtil;
 
     public Member create(MemberCreateDto memberCreateDto){
         Member member = Member.builder()
                 .email(memberCreateDto.getEmail()).
                 name(memberCreateDto.getName())
-                .password(passwordEncoder.encode(memberCreateDto.getPassword()))
+                .password(memberCreateDto.getPassword())
                 .build();
 
         return memberRepository.save(member);
@@ -40,12 +41,13 @@ public class MemberService {
 
         Member loginMember = member.get();
 
-        // matches 메서드가 dto password를 자동으로 암호화 시켜 비교한다.
-        if(!passwordEncoder.matches(memberLoginDto.getPassword(), loginMember.getPassword())){
+        log.debug("db login member ps: {}", memberLoginDto.getPassword());
+        log.debug("try login member ps: {}", loginMember.getPassword());
+        if(!memberLoginDto.getPassword().equals(loginMember.getPassword())){
             throw new IllegalArgumentException("password가 일치하지 않습니다");
         }
 
-        String token = jwtTokenProvider.createToken(loginMember.getEmail(), loginMember.getRole().toString());
+        String token = jwtUtil.createAccessToken(loginMember.getId(), loginMember.getEmail(), loginMember.getRole());
 
         return MemberLoginResponseDto.createWith(loginMember.getId(), token);
 
