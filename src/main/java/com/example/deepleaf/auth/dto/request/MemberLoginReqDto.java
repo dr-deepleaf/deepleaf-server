@@ -1,14 +1,15 @@
-package com.example.deepleaf.member.dto.request;
+package com.example.deepleaf.auth.dto.request;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
-public class MemberCreateDto {
+@NoArgsConstructor
+@Builder
+public class MemberLoginReqDto {
     private String email;
     private String password;
-    private String name;
 }
