@@ -12,8 +12,8 @@ public class GlobalException extends RuntimeException{
 
     public GlobalException(final HttpStatus status, final String name, final String message) {
         super(message);
-        this.message = message;
         this.status = status;
+        this.message = message;
         this.name = name;
     }
 }
