@@ -3,8 +3,45 @@ plugins {
     id 'org.springframework.boot' version '3.5.3'
     id 'io.spring.dependency-management' version '1.1.7'
     id 'io.freefair.lombok' version "8.11"
+    id 'jacoco'
 }
 
+jacoco {
+    toolVersion = "0.8.9"
+}
+
+/** Jacoco start **/
+test {
+    finalizedBy jacocoTestReport
+}
+
+jacocoTestReport {
+    dependsOn test
+
+    reports {
+        xml.required.set(true)
+        csv.required.set(true)
+        html.required.set(true)
+
+        xml.destination file(project.layout.buildDirectory.dir("jacoco/index.xml")) as File
+        csv.destination file(project.layout.buildDirectory.dir("jacoco/index.csv")) as File
+        html.destination file(project.layout.buildDirectory.dir("jacoco/index.html")) as File
+    }
+
+    afterEvaluate {
+        classDirectories.setFrom(
+                files(classDirectories.files.collect {
+                    fileTree(dir: it, excludes: [
+                            '**/exception/**',
+                            '**/dto/**',
+                            '**/infrastructure/**'
+                            // ...
+                    ])
+                })
+        )
+    }
+}
+/** Jacoco end **/
 group = 'com.example'
 version = '0.0.1-SNAPSHOT'
 
@@ -47,6 +84,7 @@ dependencies {
     testImplementation 'com.h2database:h2'
 
 }
+
 
 tasks.named('test') {
     useJUnitPlatform()
