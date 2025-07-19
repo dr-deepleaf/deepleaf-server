@@ -1,4 +1,4 @@
-package com.example.deepleaf.auth;
+package com.example.deepleaf.auth.controller;
 
 import com.example.deepleaf.auth.controller.AuthController;
 import com.example.deepleaf.auth.dto.request.MemberCreateReqDto;

@@ -7,7 +7,7 @@ import com.example.deepleaf.member.domain.Member;
 
 public class AuthTestFixture {
     public static Member createMockMember(){
-        return Member.builder().email("auth-email").name("auth-name").password("auth-password").build();
+        return Member.builder().id(1L).email("auth-email").name("auth-name").password("auth-password").build();
     }
     public static MemberCreateReqDto memberCreateDto(){
         return MemberCreateReqDto.builder()

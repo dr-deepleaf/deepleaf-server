@@ -24,15 +24,15 @@ public class AuthService {
     private final JWTUtil jwtUtil;
 
     public MemberCreateResDto create(MemberCreateReqDto memberCreateReqDto){
-        Member member = Member.builder()
+        Member createdMember = Member.builder()
                 .email(memberCreateReqDto.getEmail())
                 .name(memberCreateReqDto.getName())
                 .password(memberCreateReqDto.getPassword())
                 .build();
 
-        memberRepository.save(member);
+        Member savedMember = memberRepository.save(createdMember);
 
-        return new MemberCreateResDto(member.getId());
+        return new MemberCreateResDto(savedMember.getId());
     }
 
     public MemberLoginResDto login(MemberLoginReqDto memberLoginReqDto){
