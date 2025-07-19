@@ -1,0 +1,18 @@
+spring:
+  datasource:
+    url: jdbc:h2:mem:dldb;MODE=MySQL
+    username: sa
+    password: sa
+    driver-class-name: org.h2.Driver
+  jpa:
+    hibernate:
+      ddl-auto: create
+jwt:
+  secret: secretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecret
+  expiration: 3000 #???
+
+logging:
+  level:
+    com.example.deepleaf: DEBUG
+    org.springframework.cache: trace
+
