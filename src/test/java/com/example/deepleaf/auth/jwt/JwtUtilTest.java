@@ -14,7 +14,8 @@ import javax.crypto.spec.SecretKeySpec;
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
 
 @ExtendWith(MockitoExtension.class)
 public class JwtUtilTest {
@@ -38,10 +39,12 @@ public class JwtUtilTest {
 
         //then
         Assertions.assertThat(jwtUtil.getId(accessToken)).isEqualTo(mockMember.getId());
+        Assertions.assertThat(jwtUtil.getEmail(accessToken)).isEqualTo(mockMember.getEmail());
+        Assertions.assertThat(jwtUtil.getRole(accessToken)).isEqualTo(mockMember.getRole());
     }
 
     @Test
-    void 만료된_토큰이면_isExpired가_true를_반환해야_한다() throws InterruptedException {
+    void 만료된_토큰이면_isExpired에서_오류가_발생한다() throws InterruptedException {
         // given
         String shortLivedToken = Jwts.builder()
                 .claim("member_id", 1L)
@@ -52,14 +55,9 @@ public class JwtUtilTest {
         Thread.sleep(200); // 만료되게끔 약간의 시간 대기
 
         // when
-        boolean expired;
-        try {
-            expired = jwtUtil.isExpired(shortLivedToken);
-        } catch (ExpiredJwtException e) {
-            expired = true; // 예외가 나면 만료된 것으로 간주
-        }
+        assertThrows(ExpiredJwtException.class, () -> {
+            jwtUtil.isExpired(shortLivedToken);
+        });
 
-        // then
-        assertThat(expired).isTrue();
     }
 }
