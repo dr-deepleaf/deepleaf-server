@@ -3,6 +3,7 @@ package com.example.deepleaf.helper;
 import com.example.deepleaf.auth.AuthenticationContext;
 import com.example.deepleaf.auth.jwt.JWTUtil;
 import com.example.deepleaf.auth.service.AuthService;
+import com.example.deepleaf.member.service.MemberService;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
 public class MockBeanInjection {
@@ -14,4 +15,6 @@ public class MockBeanInjection {
     @MockitoBean
     protected AuthService authService;
 
+    @MockitoBean
+    protected MemberService memberService;
 }
