@@ -7,16 +7,13 @@ import com.example.deepleaf.auth.dto.response.MemberCreateResDto;
 import com.example.deepleaf.auth.dto.response.MemberLoginResDto;
 import com.example.deepleaf.auth.fixture.AuthTestFixture;
 import com.example.deepleaf.auth.repository.AuthRepository;
-import com.example.deepleaf.member.domain.Member;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.*;
-import org.springframework.transaction.annotation.Transactional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -28,9 +25,6 @@ public class AuthControllerIntegrationTest {
 
     @Autowired
     private ObjectMapper objectMapper;
-
-    @Autowired
-    private EntityManager em;
 
     @Autowired
     private AuthRepository authRepository;

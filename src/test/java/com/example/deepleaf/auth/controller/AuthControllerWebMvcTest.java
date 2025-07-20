@@ -1,6 +1,5 @@
 package com.example.deepleaf.auth.controller;
 
-import com.example.deepleaf.auth.controller.AuthController;
 import com.example.deepleaf.auth.dto.request.MemberCreateReqDto;
 import com.example.deepleaf.auth.dto.request.MemberLoginReqDto;
 import com.example.deepleaf.auth.dto.response.MemberCreateResDto;
