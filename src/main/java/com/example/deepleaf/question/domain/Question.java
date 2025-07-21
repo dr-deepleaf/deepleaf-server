@@ -26,8 +26,10 @@ public class Question {
     @Column(name = "created_at")
     private LocalDateTime createdAt;
     private String image;
+
     @Enumerated(EnumType.STRING)
     private Done done = Done.FALSE;
+
     @JoinColumn(name = "member_id")
     @ManyToOne(fetch = FetchType.LAZY)
     private Member member;
@@ -46,4 +48,10 @@ public class Question {
     public static Question createQuestion(QuestionCreateRequest questionCreateRequest, String imageUrl) {
         return new Question(questionCreateRequest,imageUrl);
     }
+
+    public void setMember(Member member){
+        this.member = member;
+    }
+
+
 }
