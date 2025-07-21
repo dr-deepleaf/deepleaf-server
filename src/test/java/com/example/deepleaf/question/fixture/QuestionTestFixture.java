@@ -1,5 +1,6 @@
 package com.example.deepleaf.question.fixture;
 
+import com.example.deepleaf.member.domain.Member;
 import com.example.deepleaf.question.domain.Question;
 import com.example.deepleaf.question.dto.request.QuestionCreateRequest;
 import com.example.deepleaf.question.dto.request.QuestionUpdateRequest;
@@ -55,5 +56,9 @@ public class QuestionTestFixture {
                 "image/jpeg",                     // MIME 타입
                 "fake image content".getBytes()   // 파일 내용 (byte[])
         );
+    }
+
+    public static Member accessCheckMockMember(){
+        return Member.builder().id(123L).build();
     }
 }

@@ -15,7 +15,6 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -94,7 +93,7 @@ public class QuestionControllerWebMvcTest extends MockBeanInjection {
         QuestionUpdateRequest questionUpdateRequest = QuestionTestFixture.createQuestionUpdateRequest();
         QuestionResponse questionUpdateResponse = QuestionTestFixture.createQuestionUpdateResponse();
 
-        when(questionService.modifyQuestion(eq(1L), any(QuestionUpdateRequest.class)))
+        when(questionService.modifyQuestion(any(Long.class),eq(1L), any(QuestionUpdateRequest.class)))
                 .thenReturn(questionUpdateResponse);
 
         mockMvc.perform(multipart("/api/question/{question_id}", 1L)
