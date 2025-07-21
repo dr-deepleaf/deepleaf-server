@@ -8,6 +8,8 @@ import com.example.deepleaf.question.dto.request.QuestionCreateRequest;
 import com.example.deepleaf.question.dto.request.QuestionUpdateRequest;
 import com.example.deepleaf.question.dto.response.QuestionCreateResponse;
 import com.example.deepleaf.question.dto.response.QuestionResponse;
+import com.example.deepleaf.question.exception.QuestionAccessUnauthorized;
+import com.example.deepleaf.question.exception.QuestionNotFound;
 import com.example.deepleaf.question.repository.QuestionRepository;
 import com.example.deepleaf.storage.service.StorageManager;
 import com.example.deepleaf.storage.service.StorageService;
@@ -37,13 +39,46 @@ public class QuestionService {
     }
 
     public Page<QuestionResponse> questionList(Pageable pageable) {
-        return null;
+        Page<Question> all = questionRepository.findAll(pageable);
+        return all.map(QuestionResponse::create);
     }
 
-    public QuestionResponse modifyQuestion(Long questionId, QuestionUpdateRequest questionUpdateRequest) {
-        return null;
+    public QuestionResponse modifyQuestion(Long memberId, Long questionId, QuestionUpdateRequest questionUpdateRequest) {
+        // 권한 체크
+        Question question = checkAccessAndReturnQuestion(memberId, questionId);
+
+        // 제목, 글 수정
+        Question modifiedQuestion = question.modifyQuestion(questionUpdateRequest);
+
+        // 이미지 수정
+        // 이미지 변경 요청이 있다면, 기존 s3이미지 삭제하고 새로운 이미지 업로드
+        if(questionUpdateRequest.getImage() != null){
+            String originalImageUrl = question.getImage();
+            storageService.deleteFile(originalImageUrl); //s3 이미지 삭제
+
+            MultipartFile image = questionUpdateRequest.getImage();
+            String updatedImageUrl = storageService.uploadFile(image, "questionImage", memberId);
+            modifiedQuestion.updateImageUrl(updatedImageUrl);
+        }
+
+        return QuestionResponse.create(question);
     }
 
     public void deleteQuestion(Long memberId, Long questionId) {
+        // 권한 체크
+        Question question = checkAccessAndReturnQuestion(memberId, questionId);
+
+        // 삭제
+        questionRepository.deleteById(questionId);
+    }
+
+    public Question checkAccessAndReturnQuestion(Long memberId, Long questionId){
+        // 수정 대상 질문 조회 후 제목, 내용 수정
+        Question question = questionRepository.findById(questionId).orElseThrow(QuestionNotFound::new);
+
+        if(question.getMember().getId() != memberId) {
+            throw new QuestionAccessUnauthorized();
+        }
+        return question;
     }
 }
