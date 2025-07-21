@@ -14,6 +14,7 @@ import com.example.deepleaf.question.repository.QuestionRepository;
 import com.example.deepleaf.storage.service.StorageManager;
 import com.example.deepleaf.storage.service.StorageService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -23,6 +24,7 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class QuestionService {
     private final StorageService storageService;
     private final QuestionRepository questionRepository;
@@ -30,11 +32,12 @@ public class QuestionService {
     public QuestionCreateResponse createQuestion(Long memberId, QuestionCreateRequest questionCreateRequest) {
         String imageUrl = storageService.uploadFile(questionCreateRequest.getImage(), "questionImage", memberId);
         Question question = Question.createQuestion(questionCreateRequest,imageUrl);
-        Question savedQuestion = questionRepository.save(question);
+
 
         Member member = memberRepository.findById(memberId).orElseThrow(MemberNotFound::new);
         member.addQuestion(question);
 
+        Question savedQuestion = questionRepository.save(question);
         return QuestionCreateResponse.create(savedQuestion);
     }
 
@@ -75,7 +78,9 @@ public class QuestionService {
     public Question checkAccessAndReturnQuestion(Long memberId, Long questionId){
         // 수정 대상 질문 조회 후 제목, 내용 수정
         Question question = questionRepository.findById(questionId).orElseThrow(QuestionNotFound::new);
-
+        log.debug("memberId: {}", memberId);
+        log.debug("questionId: {}", question.getId());
+        log.debug("question.getMember().getId(): {}", question.getMember().getId());
         if(question.getMember().getId() != memberId) {
             throw new QuestionAccessUnauthorized();
         }
