@@ -29,9 +29,6 @@ public class Question {
     private LocalDateTime createdAt;
     private String image;
 
-    @Enumerated(EnumType.STRING)
-    private Done done = Done.FALSE;
-
     @JoinColumn(name = "member_id")
     @ManyToOne(fetch = FetchType.LAZY)
     private Member member;
