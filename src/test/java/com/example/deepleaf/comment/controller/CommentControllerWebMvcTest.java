@@ -50,7 +50,7 @@ class CommentControllerWebMvcTest extends MockBeanInjection {
                         .content(objectMapper.writeValueAsString(commentRequest))
                         .header("AUTHORIZATION", token))
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.questionId").value(1L));
+                .andExpect(jsonPath("$.commentId").value(1L));
     }
 
     @Test
