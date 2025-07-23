@@ -77,6 +77,8 @@ public class Question {
     }
 
 
-
-
+    public void addComment(Comment comment) {
+        this.comments.add(comment);
+        comment.setQuestion(this);
+    }
 }

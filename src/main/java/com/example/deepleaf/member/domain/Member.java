@@ -35,12 +35,15 @@ public class Member {
     @Builder.Default // 빌더 패턴 활용 시 디폴트 값 설정
     private Role role = Role.USER;
 
+    @Builder.Default
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Question> questions = new ArrayList<Question>();
 
+    @Builder.Default
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Comment> comments = new ArrayList<Comment>();
 
+    @Builder.Default
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Disease> diseases = new ArrayList<Disease>();
 
@@ -49,4 +52,8 @@ public class Member {
         question.setMember(this);
     }
 
+    public void addComment(Comment comment) {
+        this.comments.add(comment);
+        comment.setMember(this);
+    }
 }
