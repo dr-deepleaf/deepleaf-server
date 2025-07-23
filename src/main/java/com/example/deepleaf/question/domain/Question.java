@@ -29,9 +29,6 @@ public class Question {
     private LocalDateTime createdAt;
     private String image;
 
-    @Enumerated(EnumType.STRING)
-    private Done done = Done.FALSE;
-
     @JoinColumn(name = "member_id")
     @ManyToOne(fetch = FetchType.LAZY)
     private Member member;
@@ -80,6 +77,8 @@ public class Question {
     }
 
 
-
-
+    public void addComment(Comment comment) {
+        this.comments.add(comment);
+        comment.setQuestion(this);
+    }
 }
