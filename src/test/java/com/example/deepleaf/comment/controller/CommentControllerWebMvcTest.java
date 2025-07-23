@@ -45,7 +45,7 @@ class CommentControllerWebMvcTest extends MockBeanInjection {
                 .thenReturn(response);
 
         //then
-        mockMvc.perform(post("/question/1/comment")
+        mockMvc.perform(post("/api/question/1/comment")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(commentRequest))
                         .header("AUTHORIZATION", token))
@@ -70,7 +70,7 @@ class CommentControllerWebMvcTest extends MockBeanInjection {
         when(commentService.getCommentList(1L,pageRequest)).thenReturn(commentResponses);
 
         //then
-        mockMvc.perform(get("/question/1/comments?page=0&size=20")
+        mockMvc.perform(get("/api/question/1/comments?page=0&size=20")
                         .header("AUTHORIZATION", token))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.content.length()").value(20));
@@ -83,7 +83,7 @@ class CommentControllerWebMvcTest extends MockBeanInjection {
         doNothing().when(commentService).deleteComment(any(Long.class), any(Long.class));
 
         // then
-        mockMvc.perform(delete("/comment/1").header("AUTHORIZATION", token))
+        mockMvc.perform(delete("/api/comment/1").header("AUTHORIZATION", token))
                 .andExpect(status().isOk())
                 .andExpect(content().string("comment deleted"));
 

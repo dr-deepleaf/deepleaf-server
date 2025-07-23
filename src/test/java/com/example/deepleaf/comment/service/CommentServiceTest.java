@@ -80,7 +80,7 @@ class CommentServiceTest {
         Assertions.assertThat(result.getSize()).isSameAs(5);
 
     }
-  
+
     @Test
     void 권한이_없는_사용자는_댓글_수정에_실패한다() {
         // given
