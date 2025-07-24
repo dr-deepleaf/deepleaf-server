@@ -10,38 +10,7 @@ jacoco {
     toolVersion = "0.8.9"
 }
 
-/** Jacoco start **/
-test {
-    finalizedBy jacocoTestReport
-}
 
-jacocoTestReport {
-    dependsOn test
-
-    reports {
-        xml.required.set(true)
-        csv.required.set(true)
-        html.required.set(true)
-
-        xml.destination file(project.layout.buildDirectory.dir("jacoco/index.xml")) as File
-        csv.destination file(project.layout.buildDirectory.dir("jacoco/index.csv")) as File
-        html.destination file(project.layout.buildDirectory.dir("jacoco/index.html")) as File
-    }
-
-    afterEvaluate {
-        classDirectories.setFrom(
-                files(classDirectories.files.collect {
-                    fileTree(dir: it, excludes: [
-                            '**/exception/**',
-                            '**/dto/**',
-                            '**/config/**'
-                            // ...
-                    ])
-                })
-        )
-    }
-}
-/** Jacoco end **/
 group = 'com.example'
 version = '0.0.1-SNAPSHOT'
 
@@ -81,6 +50,12 @@ dependencies {
     //aws
     implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
 
+    //querydsl
+    implementation 'com.querydsl:querydsl-jpa:5.0.0:jakarta'
+    annotationProcessor "com.querydsl:querydsl-apt:5.0.0:jakarta"
+    annotationProcessor "jakarta.annotation:jakarta.annotation-api"
+    annotationProcessor "jakarta.persistence:jakarta.persistence-api"
+
     //test
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
@@ -91,4 +66,54 @@ dependencies {
 
 tasks.named('test') {
     useJUnitPlatform()
+}
+/** Jacoco start **/
+test {
+    finalizedBy jacocoTestReport
+}
+
+jacocoTestReport {
+    dependsOn test
+
+    reports {
+        xml.required.set(true)
+        csv.required.set(true)
+        html.required.set(true)
+
+        xml.destination file(project.layout.buildDirectory.dir("jacoco/index.xml")) as File
+        csv.destination file(project.layout.buildDirectory.dir("jacoco/index.csv")) as File
+        html.destination file(project.layout.buildDirectory.dir("jacoco/index.html")) as File
+    }
+
+    afterEvaluate {
+        classDirectories.setFrom(
+                files(classDirectories.files.collect {
+                    fileTree(dir: it, excludes: [
+                            '**/Q*.class',
+                            '**/exception/**',
+                            '**/dto/**',
+                            '**/config/**',
+                            '**/com/example/generated/**',
+                            '**/com/example/deepleaf/DeepleafApplication.class',
+                            // ...
+                    ])
+                })
+        )
+    }
+}
+/** Jacoco end **/
+
+//query dsl
+def querydslDir = "$buildDir/generated/querydsl"
+
+sourceSets {
+    main.java.srcDirs += [ querydslDir ]
+}
+
+tasks.withType(JavaCompile) {
+    options.annotationProcessorGeneratedSourcesDirectory = file(querydslDir)
+}
+
+clean.doLast {
+    file(querydslDir).deleteDir()
 }
