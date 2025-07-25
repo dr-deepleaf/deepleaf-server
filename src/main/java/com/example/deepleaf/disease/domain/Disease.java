@@ -3,6 +3,9 @@ package com.example.deepleaf.disease.domain;
 import com.example.deepleaf.member.domain.Member;
 import jakarta.persistence.*;
 import lombok.NoArgsConstructor;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import java.time.LocalDateTime;
 
 @Entity
 @NoArgsConstructor
@@ -12,15 +15,11 @@ public class Disease {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "disease_id")
     private Long id;
-
     private String result;
-
-    @Column(name = "disease_info")
     private String diseaseInfo;
-    private String watering;
-    private String environment;
-    private String nutrition;
-    private Double confidence;
+    @Enumerated(EnumType.STRING)
+    private Crop crop;
+    private LocalDateTime createdAt;
 
     @JoinColumn(name = "member_id")
     @ManyToOne(fetch = FetchType.LAZY)
