@@ -20,7 +20,7 @@ public class Disease {
     @Enumerated(EnumType.STRING)
     private Crop crop;
     private LocalDateTime createdAt;
-
+    private Double confidence;
     @JoinColumn(name = "member_id")
     @ManyToOne(fetch = FetchType.LAZY)
     private Member member;

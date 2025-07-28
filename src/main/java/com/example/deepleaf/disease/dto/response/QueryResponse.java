@@ -12,17 +12,11 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class DetectionResponse {
-
-    private Long memberId;
+public class QueryResponse {
     private Long diseaseId;
-
     private String result;
     private String diseaseInfo;
     private Crop crop;
     private LocalDateTime createdAt;
-
-
     private Double confidence;
 }
-
