@@ -39,3 +39,5 @@ out/
 ## my
 application.yml
 mysql_data
+# QueryDSL generated sources
+/src/main/generated/

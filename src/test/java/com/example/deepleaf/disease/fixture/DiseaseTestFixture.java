@@ -1,8 +1,10 @@
 package com.example.deepleaf.disease.fixture;
 
 import com.example.deepleaf.disease.domain.Crop;
+import com.example.deepleaf.disease.domain.Disease;
 import com.example.deepleaf.disease.dto.request.DetectionRequest;
 import com.example.deepleaf.disease.dto.request.QueryRequest;
+import com.example.deepleaf.disease.dto.response.AiServerResponse;
 import com.example.deepleaf.disease.dto.response.DetectionResponse;
 import com.example.deepleaf.disease.dto.response.QueryResponse;
 import org.springframework.mock.web.MockMultipartFile;
@@ -24,6 +26,18 @@ public class DiseaseTestFixture {
                 .build();
     }
 
+    public static Disease createDisease(){
+        return Disease.createWith(aiServerResponse(), "apple");
+    }
+
+
+    public static AiServerResponse aiServerResponse(){
+        AiServerResponse aiServerResponse = new AiServerResponse();
+        aiServerResponse.setResult("result");
+        aiServerResponse.setConfidence(0.92);
+        aiServerResponse.setDiseaseInfo("info");
+        return aiServerResponse;
+    }
     public static QueryRequest queryRequest(){
         return new QueryRequest(Crop.APPLE);
     }

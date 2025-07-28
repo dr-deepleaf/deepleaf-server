@@ -56,4 +56,9 @@ public class Member {
         this.comments.add(comment);
         comment.setMember(this);
     }
+
+    public void addDisease(Disease disease) {
+        this.diseases.add(disease);
+        disease.setMember(this);
+    }
 }
