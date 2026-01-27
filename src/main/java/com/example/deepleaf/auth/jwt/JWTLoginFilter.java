@@ -26,7 +26,7 @@ public class JWTLoginFilter extends OncePerRequestFilter {
         String requestURI = request.getRequestURI();
 
         // 로그인 필터를 적용하지 않을 경로
-        if(requestURI.startsWith("/auth/")){
+        if(requestURI.startsWith("/auth/") || requestURI.startsWith("/health")){
             filterChain.doFilter(request,response);
             return;
         }
