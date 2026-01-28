@@ -26,8 +26,13 @@ public class RedisCacheConfig {
     ObjectMapper objectMapper = new ObjectMapper();
     objectMapper.registerModule(new JavaTimeModule());
     objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+    // 캐시 내에서 다양한 타입(Page, DTO 등)을 안전하게 역직렬화할 수 있도록 타입 정보 포함
+    objectMapper.activateDefaultTyping(
+        objectMapper.getPolymorphicTypeValidator(),
+        ObjectMapper.DefaultTyping.NON_FINAL
+    );
 
-    // 타입 정보를 포함해서 직렬화/역직렬화를 안전하게 처리
+    // 타입 정보가 포함된 Json으로 직렬화/역직렬화
     GenericJackson2JsonRedisSerializer serializer = new GenericJackson2JsonRedisSerializer(objectMapper);
 
     RedisCacheConfiguration redisCacheConfiguration = RedisCacheConfiguration
