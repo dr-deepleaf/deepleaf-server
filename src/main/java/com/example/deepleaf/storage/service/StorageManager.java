@@ -19,6 +19,16 @@ public class StorageManager {
         String uuid = UUID.randomUUID().toString();
         return "images/" + filePath + "/" + userId + "-profile-" + timestamp + "-" + uuid + ext;
     }
+
+    // 이메일 기반 이미지 파일명 생성 (이메일별로 저장)
+    public String generateImageFileNameByEmail(String filename, String filePath, String email) {
+        String ext = getFileExtension(filename);
+        String timestamp = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd'T'HHmmss"));
+        String uuid = UUID.randomUUID().toString();
+        // 이메일을 파일 경로에 안전하게 사용하기 위해 @를 -at-로 변경
+        String safeEmail = email.replace("@", "-at-").replace(".", "-dot-");
+        return "images/" + filePath + "/" + safeEmail + "/" + timestamp + "-" + uuid + ext;
+    }
     public String extractKeyFromUrl(String url) {
         try {
             URI uri = new URI(url);
