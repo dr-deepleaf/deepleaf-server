@@ -2,10 +2,13 @@ package com.example.deepleaf.disease;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -35,11 +38,14 @@ public class DiseaseService {
     private final RestTemplate restTemplate;
     private final StorageService storageService;
     private final MemberRepository memberRepository;
+    private final DiseaseCacheService diseaseCacheService;
 
     @Value("${disease.predict.api.url}")
     private String predictApiUrl;
 
+    @CacheEvict(value = "diseaseHistory", key = "#memberId")
     public DiseasePredictResponse predictDisease(Long memberId, DiseasePredictRequest request) {
+        log.info("🔄 [CACHE] 캐시 무효화: memberId={}, diseaseHistory 캐시 삭제", memberId);
         // Member 조회 (이메일 정보를 얻기 위해)
         Member member = memberRepository.findById(memberId)
             .orElseThrow(MemberNotFound::new);
@@ -116,22 +122,17 @@ public class DiseaseService {
     }
 
     public Page<DiseasePredictResponse> getDiseaseHistory(Long memberId, Pageable pageable) {
-        // Member 조회
-        Member member = memberRepository.findById(memberId)
-            .orElseThrow(MemberNotFound::new);
+        // 별도 서비스(DiseaseCacheService)를 통해 캐시 적용
+        List<DiseasePredictResponse> allResponses = diseaseCacheService.getDiseaseHistoryList(memberId);
 
-        // 해당 회원의 진단 기록 조회 (최신순 정렬, 페이징)
-        Page<Disease> diseases = diseaseRepository.findByMemberOrderByCreatedAtDesc(member, pageable);
+        // 메모리에서 페이징 처리
+        int start = (int) pageable.getOffset();
+        int end = Math.min(start + pageable.getPageSize(), allResponses.size());
+        List<DiseasePredictResponse> pagedResponses = allResponses.subList(start, end);
 
-        log.debug("진단 기록 조회 완료: memberId={}, count={}, totalElements={}", 
-            memberId, diseases.getNumberOfElements(), diseases.getTotalElements());
+        log.debug("진단 기록 조회 완료: memberId={}, count={}, totalElements={}",
+            memberId, pagedResponses.size(), allResponses.size());
 
-        // Disease 엔티티를 DiseasePredictResponse DTO로 변환
-        return diseases.map(disease -> new DiseasePredictResponse(
-            disease.getResult(),
-            disease.getConfidence(),
-            disease.getImageUrl(),
-            disease.getCreatedAt()
-        ));
+        return new PageImpl<>(pagedResponses, pageable, allResponses.size());
     }
 }
