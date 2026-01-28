@@ -1,12 +1,10 @@
 package com.example.deepleaf.plant;
 
-import java.util.List;
-
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import com.example.deepleaf.plant.domain.Plant;
@@ -16,26 +14,24 @@ import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class PlantService {
     private final PlantRepository plantRepository;
+    private final PlantCacheService plantCacheService;
 
+    /**
+     * 식물 목록을 페이지 단위로 조회.
+     * - 캐시 키: "page:size"
+     * - 캐시 값: PlantPage (content + totalElements)
+     */
     public Page<PlantResponse> getPlants(Pageable pageable) {
-        // 전체 식물 목록을 캐시에서 가져와 메모리에서 페이징
-        List<PlantResponse> allPlants = getAllPlants();
+        PlantCacheService.PlantPage cachedPage = plantCacheService.getPlantPage(pageable);
 
-        int start = (int) pageable.getOffset();
-        int end = Math.min(start + pageable.getPageSize(), allPlants.size());
-        List<PlantResponse> pageContent = allPlants.subList(start, end);
-
-        return new PageImpl<>(pageContent, pageable, allPlants.size());
-    }
-
-    @Cacheable(value = "plantListAll")
-    public List<PlantResponse> getAllPlants() {
-        List<Plant> plants = plantRepository.findAll();
-        return plants.stream()
-            .map(this::toPlantResponse)
-            .toList();
+        return new PageImpl<>(
+            cachedPage.getContent(),
+            pageable,
+            cachedPage.getTotalElements()
+        );
     }
 
     public Page<PlantResponse> getPlantsByCommonName(String commonName, Pageable pageable) {
