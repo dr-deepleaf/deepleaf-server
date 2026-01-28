@@ -90,20 +90,21 @@ public class DiseaseService {
                 log.debug("파싱된 응답: result={}, confidence={}", response.getResult(), response.getConfidence());
 
                 // 질병 진단 기록 저장 (member는 이미 조회됨)
-                Disease disease = Disease.createDisease(response.getResult(), response.getConfidence());
+                Disease disease = Disease.createDisease(response.getResult(), response.getConfidence(), imageUrl);
                 member.addDisease(disease);
                 Disease savedDisease = diseaseRepository.save(disease);
 
                 log.debug("질병 진단 기록 저장 완료: memberId={}, result={}, confidence={}, createdAt={}", 
                     memberId, response.getResult(), response.getConfidence(), savedDisease.getCreatedAt());
 
-                // 응답에 생성 날짜 포함
+                // 응답에 생성 날짜 및 이미지 URL 포함
                 response.setCreatedAt(savedDisease.getCreatedAt());
+                response.setImageUrl(savedDisease.getImageUrl());
 
                 return response;
             } else {
                 log.warn("외부 API 응답이 null이거나 비어있습니다.");
-                return new DiseasePredictResponse(null, null, null);
+                return new DiseasePredictResponse(null, null, null, null);
             }
         } catch (IOException e) {
             log.error("JSON 파싱 중 오류 발생", e);
@@ -129,6 +130,7 @@ public class DiseaseService {
         return diseases.map(disease -> new DiseasePredictResponse(
             disease.getResult(),
             disease.getConfidence(),
+            disease.getImageUrl(),
             disease.getCreatedAt()
         ));
     }

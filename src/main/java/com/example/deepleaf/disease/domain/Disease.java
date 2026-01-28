@@ -24,6 +24,8 @@ public class Disease {
 
     private Double confidence;
 
+    private String imageUrl;
+
     @CreatedDate
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
@@ -32,13 +34,14 @@ public class Disease {
     @ManyToOne(fetch = FetchType.LAZY)
     private Member member;
 
-    private Disease(String result, Double confidence) {
+    private Disease(String result, Double confidence, String imageUrl) {
         this.result = result;
         this.confidence = confidence;
+        this.imageUrl = imageUrl;
     }
 
-    public static Disease createDisease(String result, Double confidence) {
-        return new Disease(result, confidence);
+    public static Disease createDisease(String result, Double confidence, String imageUrl) {
+        return new Disease(result, confidence, imageUrl);
     }
 
     public void setMember(Member member) {

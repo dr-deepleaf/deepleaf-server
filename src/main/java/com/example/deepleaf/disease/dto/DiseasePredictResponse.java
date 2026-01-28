@@ -15,5 +15,7 @@ public class DiseasePredictResponse {
 
     private Double confidence;
 
+    private String imageUrl;
+
     private LocalDateTime createdAt;
 }
