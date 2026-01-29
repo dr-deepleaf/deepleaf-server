@@ -1,0 +1,11 @@
+# Production: 앱만 실행. DB는 RDS, 캐시는 ElastiCache 사용
+# prod 프로필만 활성화해서 실행
+
+services:
+  deepleaf-app:
+    build: .
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_PROFILES_ACTIVE: prod
+    restart: unless-stopped
