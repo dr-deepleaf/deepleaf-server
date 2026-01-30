@@ -7,7 +7,7 @@ files:
   - source: /
     # EC2의 어떤 경로에 저장할 지 지정한다. 
     destination: /home/ubuntu/deepleaf-server
-
+file_exists_behavior: OVERWRITE
 permissions:
   - object: /
     owner: ubuntu
