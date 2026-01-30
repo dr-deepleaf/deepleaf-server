@@ -13,7 +13,7 @@ public class HealthController {
     public String health() {
         try {
             InetAddress localHost = InetAddress.getLocalHost();
-            return localHost.getHostAddress();
+            return "health";
         } catch (UnknownHostException e) {
             return "UNKNOWN";
         }
