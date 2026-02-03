@@ -16,7 +16,7 @@ public class HealthController {
 
     @GetMapping("/health")
     public String health() {
-        // 이제 복잡한 Java 코드 없이 변수만 리턴하면 됩니다.
+        // 이제 복잡한 Java 코드 없이 변수만 리턴하면 됩니다.sss
         return ec2Ip;
     }
 }

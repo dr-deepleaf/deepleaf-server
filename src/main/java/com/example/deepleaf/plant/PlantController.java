@@ -28,6 +28,16 @@ public class PlantController {
         return ResponseEntity.ok().body(plants);
     }
 
+    /** 캐시 미사용 API (캐시 vs 비캐시 비교용) */
+    @GetMapping("/no-cache")
+    public ResponseEntity<Page<PlantResponse>> getPlantsWithoutCache(
+            @RequestParam(value = "page", defaultValue = "0") int page,
+            @RequestParam(value = "size", defaultValue = "10") int size
+    ) {
+        Page<PlantResponse> plants = plantService.getPlantsWithoutCache(PageRequest.of(page, size));
+        return ResponseEntity.ok().body(plants);
+    }
+
     @GetMapping("/search")
     public ResponseEntity<Page<PlantResponse>> getPlantsByCommonName(
             @RequestParam(value = "commonName") String commonName,

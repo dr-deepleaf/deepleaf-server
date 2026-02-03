@@ -6,6 +6,9 @@ import com.example.deepleaf.comment.dto.response.CommentResponse;
 import com.example.deepleaf.comment.service.CommentService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+
+import java.util.List;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -27,6 +30,7 @@ public class CommentController {
             @PathVariable(value = "question_id") Long questionId,
             @RequestBody CommentRequest commentRequest
     ) {
+        
         CommentResponse response = commentService.commentCreate(memberId, questionId, commentRequest);
         return ResponseEntity.status(201).body(response);
     }

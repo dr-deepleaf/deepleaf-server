@@ -20,7 +20,7 @@ public class PlantService {
     private final PlantCacheService plantCacheService;
 
     /**
-     * 식물 목록을 페이지 단위로 조회.
+     * 식물 목록을 페이지 단위로 조회 (캐시 사용).
      * - 캐시 키: "page:size"
      * - 캐시 값: PlantPage (content + totalElements)
      */
@@ -34,6 +34,17 @@ public class PlantService {
         );
     }
 
+    /**
+     * 식물 목록을 페이지 단위로 조회 (캐시 미사용, DB 직접 조회).
+     * 캐시 적용 여부 비교용.
+     */
+    public Page<PlantResponse> getPlantsWithoutCache(Pageable pageable) {
+        Page<Plant> plants = plantRepository.findAll(pageable);
+        return plants.map(this::toPlantResponse);
+    }
+
+
+    
     public Page<PlantResponse> getPlantsByCommonName(String commonName, Pageable pageable) {
         Page<Plant> plants = plantRepository.findByCommonNameContainingIgnoreCase(commonName, pageable);
         return plants.map(this::toPlantResponse);
